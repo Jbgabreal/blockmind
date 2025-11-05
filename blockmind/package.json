@@ -1,0 +1,23 @@
+{
+  "name": "blockmind",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cd blockmind-ui && doppler run -- npm run dev",
+    "build": "cd blockmind-ui && doppler run -- npm run build",
+    "start": "cd blockmind-ui && doppler run -- npm run start",
+    "lint": "cd blockmind-ui && doppler run -- npm run lint",
+    "install:win": "cd blockmind-ui && npm install --ignore-scripts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.39",
+    "@types/node": "^24.0.10",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}
