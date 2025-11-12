@@ -199,9 +199,23 @@ async function generateWebsiteInDaytona(
         console.warn(`   This project exists in the database but the directory was never created (or was deleted).`);
         console.warn(`   Creating the directory and setting up the project now...`);
         
-        // Create the project directory
+        // Create the project directory and parent directories
         await sandbox.process.executeCommand(`mkdir -p ${projectDir}`, rootDir);
         console.log(`✓ Created project directory: ${projectDir}`);
+        
+        // Verify the directory was created successfully
+        const verifyDir = await sandbox.process.executeCommand(
+          `test -d ${projectDir} && echo "exists" || echo "failed"`,
+          rootDir
+        );
+        
+        if (verifyDir.result?.trim() !== "exists") {
+          console.error(`❌ Failed to create project directory: ${projectDir}`);
+          console.error(`   Verify result: ${verifyDir.result}`);
+          throw new Error(`Failed to create project directory at ${projectDir}. Check Daytona sandbox permissions.`);
+        }
+        
+        console.log(`✓ Verified project directory exists: ${projectDir}`);
         
         // Since this is effectively a new project (directory didn't exist),
         // we need to run the full setup. Change isModification to false so it runs full setup
@@ -717,9 +731,22 @@ async function loadClaudeCode() {
   Every feature mentioned in the prompt MUST be fully functional before finishing.
   \`;
 
-  console.log('Starting website generation with Claude Code...');
+    console.log('Starting website generation with Claude Code...');
   console.log('Working directory:', process.cwd());
   console.log('ANTHROPIC_API_KEY set:', !!process.env.ANTHROPIC_API_KEY);
+  
+  // Validate ANTHROPIC_API_KEY before proceeding
+  if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY.trim().length === 0) {
+    console.error('❌ ERROR: ANTHROPIC_API_KEY is not set or is empty');
+    console.error('   Make sure the environment variable is passed correctly to the script');
+    process.exit(1);
+  }
+  
+  // Validate it looks like a valid key format
+  if (!process.env.ANTHROPIC_API_KEY.startsWith('sk-ant-')) {
+    console.error('⚠️  WARNING: ANTHROPIC_API_KEY does not start with "sk-ant-"');
+    console.error('   This may not be a valid Anthropic API key');
+  }
   
   const messages = [];
   const abortController = new AbortController();
@@ -844,7 +871,7 @@ async function loadClaudeCode() {
         
         for (const route of mentionedRoutes) {
           if (!routes.some(r => r.includes(route.replace('/', '')))) {
-            console.warn(\`⚠️  WARNING: Route \${route} mentioned in prompt but not found. May cause 404 errors.\`);
+            console.warn('⚠️  WARNING: Route ' + route + ' mentioned in prompt but not found. May cause 404 errors.');
           }
         }
       }
@@ -853,8 +880,27 @@ async function loadClaudeCode() {
     }
     
   } catch (error) {
-    console.error('Generation error:', error);
-    console.error('Stack:', error.stack);
+    console.error('❌ Generation error:', error);
+    console.error('Error type:', error.constructor?.name || typeof error);
+    console.error('Error message:', error.message || String(error));
+    
+    if (error.stack) {
+      console.error('Stack trace:', error.stack);
+    }
+    
+    // Provide helpful context for common errors
+    if (error.message?.includes('401') || error.message?.includes('authentication') || error.message?.includes('unauthorized')) {
+      console.error('\\n💡 This appears to be an authentication error.');
+      console.error('   Check that your ANTHROPIC_API_KEY is valid and has credits.');
+      console.error('   Current API key (first 10 chars):', process.env.ANTHROPIC_API_KEY?.substring(0, 10) || 'NOT SET');
+    } else if (error.message?.includes('ENOENT') || error.message?.includes('no such file')) {
+      console.error('\\n💡 This appears to be a file not found error.');
+      console.error('   The Claude Code SDK files may not be properly installed.');
+    } else if (error.message?.includes('network') || error.message?.includes('ECONNREFUSED') || error.message?.includes('ETIMEDOUT')) {
+      console.error('\\n💡 This appears to be a network connectivity error.');
+      console.error('   Check your internet connection and Daytona sandbox connectivity.');
+    }
+    
     process.exit(1);
   }
 })();`;
@@ -1018,6 +1064,16 @@ async function loadClaudeCode() {
     // Log which env vars we're passing (without exposing values)
     console.log(`Environment variables being passed: ${Object.keys(envVars).length} vars`);
     console.log(`ANTHROPIC_API_KEY present: ${!!envVars.ANTHROPIC_API_KEY && envVars.ANTHROPIC_API_KEY.length > 0}`);
+    
+    // Critical: Validate ANTHROPIC_API_KEY before executing
+    if (!envVars.ANTHROPIC_API_KEY || envVars.ANTHROPIC_API_KEY.trim().length === 0) {
+      console.error(`❌ ERROR: ANTHROPIC_API_KEY is missing or empty in environment variables`);
+      console.error(`   This will cause the Claude Code SDK to fail.`);
+      console.error(`   Check that process.env.ANTHROPIC_API_KEY is set in your .env file`);
+      throw new Error('ANTHROPIC_API_KEY is required but not set');
+    }
+    
+    console.log(`✓ ANTHROPIC_API_KEY validated (length: ${envVars.ANTHROPIC_API_KEY.length} chars)`);
 
     // Use explicit node path - execute script directly without complex quoting
     // The projectDir is already set, so we can use relative paths

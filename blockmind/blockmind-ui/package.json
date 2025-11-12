@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "doppler run -- next dev",
+    "dev:local": "next dev",
     "build": "doppler run -- next build",
+    "build:local": "next build",
     "start": "doppler run -- next start",
     "lint": "doppler run -- next lint",
     "install:win": "npm install --ignore-scripts"
@@ -14,16 +16,20 @@
     "@daytonaio/sdk": "^0.21.5",
     "@privy-io/react-auth": "^1.99.1",
     "@privy-io/server-auth": "^1.32.5",
+    "@radix-ui/react-slot": "^1.2.4",
     "@solana/spl-token": "^0.4.9",
     "@solana/web3.js": "^1.95.3",
     "@supabase/supabase-js": "^2.39.0",
     "bs58": "^5.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dotenv": "^17.0.1",
     "lucide-react": "^0.552.0",
     "next": "14.2.3",
     "qrcode.react": "^4.2.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import { Hero } from "@/components/ui/hero";
 import { getSavedProjects, deleteProject } from "@/utils/projectStorage";
 import { usePrivy } from "@privy-io/react-auth";
 
@@ -323,24 +324,22 @@ export default function Home() {
           )}
         </div>
         
+        {/* New Hero Component with Animated Canvas - Show only for non-authenticated users */}
+        {!authenticated && <Hero />}
+        
+        {/* Prompt input section - VISIBLE TO EVERYONE */}
         <div className="max-w-4xl mx-auto text-center w-full">
-          {/* Hero Section */}
-          <div className="mb-12">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
-              Build something with{" "}
-              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-                Blockmind
-              </span>
-            </h1>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/20 rounded-full mb-8">
-              <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-              <span className="text-sm text-cyan-300 font-medium">Powered by Claude Code</span>
+          {/* Simplified header for authenticated users */}
+          {authenticated && (
+            <div className="mb-12">
+              <h2 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+                What would you like to build today?
+              </h2>
+              <p className="text-lg text-gray-400">
+                Describe your idea and watch it come to life in minutes
+              </p>
             </div>
-            <p className="text-xl sm:text-2xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-              Turn your ideas into production-ready code in minutes. Powered by
-              Claude's advanced AI capabilities.
-            </p>
-          </div>
+          )}
 
           {/* Input Section */}
           <div className="relative max-w-3xl mx-auto">
@@ -399,6 +398,193 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        {/* Feature Showcase Section - Inspired by Taku */}
+        {!authenticated && (
+          <>
+            {/* Stats Section */}
+            <section className="mt-32 mb-20 max-w-6xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center px-6">
+                <div className="group">
+                  <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
+                    2-5
+                  </div>
+                  <div className="text-gray-400 text-sm md:text-base">Minutes to Deploy</div>
+                </div>
+                <div className="group">
+                  <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
+                    100%
+                  </div>
+                  <div className="text-gray-400 text-sm md:text-base">Functional Code</div>
+                </div>
+                <div className="group">
+                  <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
+                    $0.50
+                  </div>
+                  <div className="text-gray-400 text-sm md:text-base">Avg. Cost</div>
+                </div>
+                <div className="group">
+                  <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-400 to-cyan-400 bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform">
+                    ∞
+                  </div>
+                  <div className="text-gray-400 text-sm md:text-base">Possibilities</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Feature Section */}
+            <section className="py-20 px-6 max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                    Build and Deploy in{" "}
+                    <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                      One Step
+                    </span>
+                  </h2>
+                  <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                    Blockmind generates production-ready code, sets up your development environment,
+                    and deploys to a live preview URL—all automatically.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="text-white font-semibold">Full-Stack Applications</div>
+                        <div className="text-gray-400 text-sm">Next.js, TypeScript, Tailwind CSS, and more</div>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="text-white font-semibold">Instant Preview</div>
+                        <div className="text-gray-400 text-sm">See your app live in seconds with hot reload</div>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-1">
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="text-white font-semibold">Powered by Claude</div>
+                        <div className="text-gray-400 text-sm">AI that understands your vision and builds it right</div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl blur-3xl"></div>
+                  <div className="relative bg-gradient-to-br from-gray-900/90 to-gray-950/90 backdrop-blur-xl rounded-2xl p-8 border border-gray-800 hover:border-cyan-500/50 transition-all duration-300">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3 text-sm text-gray-400">
+                        <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                        <span>Generation in progress...</span>
+                      </div>
+                      <div className="bg-black/40 rounded-lg p-4 font-mono text-sm">
+                        <div className="text-cyan-400">$ blockmind generate</div>
+                        <div className="text-gray-500 mt-2">✓ Analyzing requirements...</div>
+                        <div className="text-gray-500">✓ Generating components...</div>
+                        <div className="text-gray-500">✓ Setting up routes...</div>
+                        <div className="text-gray-500">✓ Installing dependencies...</div>
+                        <div className="text-green-400 mt-2">✓ Deploy complete!</div>
+                        <div className="text-blue-400 mt-2">→ https://your-app.preview.dev</div>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-800">
+                        <span>Built in 2m 34s</span>
+                        <span>~$0.48 USD</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Project Templates */}
+            <section className="py-20 px-6 max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                  Start with a Template
+                </h2>
+                <p className="text-gray-400 text-lg">
+                  Or describe your own idea and let Blockmind create it from scratch
+                </p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[
+                  {
+                    title: "Business Dashboard",
+                    description: "Analytics, charts, data tables, and real-time updates",
+                    icon: "📊",
+                    gradient: "from-cyan-500 to-blue-500"
+                  },
+                  {
+                    title: "E-commerce Store",
+                    description: "Product catalog, shopping cart, checkout, and payments",
+                    icon: "🛒",
+                    gradient: "from-blue-500 to-purple-500"
+                  },
+                  {
+                    title: "Portfolio Site",
+                    description: "Showcase your work with modern design and animations",
+                    icon: "🎨",
+                    gradient: "from-purple-500 to-pink-500"
+                  },
+                  {
+                    title: "Blog Platform",
+                    description: "Content management, markdown support, and SEO optimization",
+                    icon: "📝",
+                    gradient: "from-pink-500 to-red-500"
+                  },
+                  {
+                    title: "SaaS Application",
+                    description: "User auth, subscriptions, admin dashboard, and APIs",
+                    icon: "💼",
+                    gradient: "from-red-500 to-orange-500"
+                  },
+                  {
+                    title: "Interactive Game",
+                    description: "Game logic, animations, scoring, and multiplayer support",
+                    icon: "🎮",
+                    gradient: "from-orange-500 to-cyan-500"
+                  }
+                ].map((template, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setPrompt(`Create a ${template.title.toLowerCase()}`)}
+                    className="group relative bg-gradient-to-br from-gray-900/90 to-gray-950/90 backdrop-blur-xl rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 text-left hover:scale-105 hover:-translate-y-1"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 rounded-2xl transition-opacity duration-300" 
+                         style={{ backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-stops))` }}></div>
+                    <div className="relative">
+                      <div className={`text-4xl mb-4 group-hover:scale-110 transition-transform`}>
+                        {template.icon}
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2 group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:text-transparent group-hover:${template.gradient}">
+                        {template.title}
+                      </h3>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        {template.description}
+                      </p>
+                      <div className="mt-4 flex items-center text-cyan-400 text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                        Try it <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
       </div>
     </main>
   );
